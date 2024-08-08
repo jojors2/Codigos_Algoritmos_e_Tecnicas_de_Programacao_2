@@ -1,0 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+int main (){
+	char str_usuario [50];
+	printf ("Digite uma palavra:\n");
+	scanf ("%49s", str_usuario);
+	int tamanho = strlen (str_usuario);
+	printf ("O comprimento da palavra eh:\n%d", tamanho);
+}
