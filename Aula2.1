@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+void separacao() {
+    printf("---------------------------------------\n");
+}
+
+int main() {
+    // Parte 1: Criação e Escrita Básica
+    FILE *arquivo;
+    arquivo = fopen("nomes.txt", "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para escrita\n");
+        return 1;
+    }
+
+    char str[50];
+    printf("Informe 5 nomes:\n\n");
+    for (int i = 0; i < 5; i++) {
+        scanf("%49s", str);
+        fprintf(arquivo, "%s\n", str); // Escreve o nome no arquivo com uma nova linha
+    }
+    fclose(arquivo);
+    separacao();
+    printf("Os nomes foram salvos no arquivo 'nomes.txt'.\n");
+    separacao();
+
+    // Parte 2: Leitura e Exibição
+    arquivo = fopen("nomes.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para leitura\n");
+        return 1;
+    }
+
+    printf("Conteúdo do arquivo 'nomes.txt':\n\n");
+    while (fgets(str, sizeof(str), arquivo) != NULL) {
+        printf("%s", str);
+    }
+    fclose(arquivo);
+    separacao();
+
+    // Parte 3: Contagem de Linhas
+    arquivo = fopen("nomes.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para leitura\n");
+        return 1;
+    }
+
+    int linhas = 0;
+    char ch;
+    while ((ch = fgetc(arquivo)) != EOF) {
+        if (ch == '\n') {
+            linhas++;
+        }
+    }
+    if (ftell(arquivo) != 0 && ch != '\n') {
+        linhas++;
+    }
+
+    fclose(arquivo); 
+    printf("O número de linhas é: %d\n", linhas);
+
+    return 0;
+}
+
