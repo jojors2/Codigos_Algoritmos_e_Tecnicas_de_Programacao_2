@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NOME 100
+#define MIN_MATRICULA 1
+#define MAX_MATRICULA 10
+
+// Definição do registro para funcionário
+typedef struct {
+    int numeroMatricula;
+    char nome[MAX_NOME];
+} regFunc;
+
+// Definição do nó da lista encadeada
+typedef struct nodo {
+    regFunc funcionario;
+    struct nodo *proximo;
+} Nodo;
+
+// Declaração da variável global para a lista de funcionários
+Nodo *listaRFunc = NULL;
+
+// Função para adicionar um novo funcionário à lista
+void adicionarFuncionario() {
+    Nodo *novoNodo = (Nodo *)malloc(sizeof(Nodo));
+    if (novoNodo == NULL) {
+        printf("Erro ao alocar memória.\n");
+        return;
+    }
+
+    // Leitura dos dados do funcionário
+    printf("\nDigite o número da matrícula (%d-%d): ", MIN_MATRICULA, MAX_MATRICULA);
+    scanf("%d", &novoNodo->funcionario.numeroMatricula);
+
+    // Validação do número da matrícula
+    if (novoNodo->funcionario.numeroMatricula < MIN_MATRICULA || novoNodo->funcionario.numeroMatricula > MAX_MATRICULA) {
+        printf("Número da matrícula inválido. Deve estar entre %d e %d.\n", MIN_MATRICULA, MAX_MATRICULA);
+        free(novoNodo);
+        return;
+    }
+
+    printf("Digite o nome do funcionário: ");
+    getchar(); // Limpa o buffer do teclado
+    fgets(novoNodo->funcionario.nome, MAX_NOME, stdin);
+    novoNodo->funcionario.nome[strcspn(novoNodo->funcionario.nome, "\n")] = '\0'; // Remove o newline do final
+
+    // Inserção do novo funcionário na lista
+    novoNodo->proximo = listaRFunc;
+    listaRFunc = novoNodo;
+
+    printf("\nFuncionário adicionado com sucesso.\n");
+}
+
+// Função para listar todos os funcionários na lista
+void listarFuncionarios() {
+    Nodo *atual = listaRFunc;
+    if (atual == NULL) {
+        printf("\nA lista de funcionários está vazia.\n");
+        return;
+    }
+
+    printf("\nNumero de Matrícula - Nome\n");
+    printf("-----------------------\n");
+    while (atual != NULL) {
+        printf("%d - %s\n", atual->funcionario.numeroMatricula, atual->funcionario.nome);
+        atual = atual->proximo;
+    }
+}
+
+// Função principal para o menu e interação com o usuário
+int main() {
+    int opcao;
+
+    do {
+        printf("\nEscolha uma opção:\n");
+        printf("\n1. Adicionar funcionário\n");
+        printf("2. Listar funcionários\n");
+        printf("0. Sair\n");
+        printf("\nOpção: ");
+        scanf("%d", &opcao);
+
+        // Limpar o buffer de entrada após o scanf
+        while (getchar() != '\n'); 
+
+        switch(opcao) {
+            case 1:
+                adicionarFuncionario();
+                break;
+            case 2:
+                listarFuncionarios();
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+        }
+    } while (opcao != 0);
+
+    // Liberar memória alocada
+    Nodo *atual = listaRFunc;
+    Nodo *temp;
+    while (atual != NULL) {
+        temp = atual;
+        atual = atual->proximo;
+        free(temp);
+    }
+
+    return 0;
+}
